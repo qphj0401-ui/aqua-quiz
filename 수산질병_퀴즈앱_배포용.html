@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>수산질병 암기 퀴즈</title>
+<style>
+:root{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Pretendard,sans-serif;color:#0f172a;background:#f8fafc;line-height:1.5;font-weight:400}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:radial-gradient(circle at top,#dbeafe 0%,#e0f2fe 34%,#f8fafc 72%,#fff 100%)}
+button{font:inherit;cursor:pointer}
+.app{width:100%;max-width:600px;margin:0 auto;padding:20px 16px 60px}
+/* 점 */
+.dots{display:flex;justify-content:center;gap:8px;margin-bottom:14px}
+.dots span{width:10px;height:10px;border-radius:999px;background:#22d3ee}
+.dots span:nth-child(2){background:#0ea5e9}
+.dots span:nth-child(3){background:#2563eb}
+/* 탭 */
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;background:rgba(255,255,255,.9);border-radius:18px;padding:8px;box-shadow:0 10px 24px rgba(15,23,42,.06);margin-bottom:14px}
+.tab{text-align:center;border-radius:12px;padding:10px 4px;font-size:13px;color:#64748b;font-weight:500}
+.tab.on{background:#f0f9ff;color:#0369a1;font-weight:700}
+/* 카드 */
+.card{border:1px solid rgba(255,255,255,.6);background:rgba(255,255,255,.95);border-radius:28px;box-shadow:0 16px 50px rgba(15,23,42,.08);padding:24px}
+/* 홈 */
+.hero-icon{width:64px;height:64px;margin:0 auto;display:flex;align-items:center;justify-content:center;border-radius:24px;background:linear-gradient(135deg,#cffafe,#dbeafe);font-size:32px}
+h1,h2{margin:16px 0 0;text-align:center;font-size:clamp(22px,5vw,32px);line-height:1.2}
+h3{font-size:18px;line-height:1.5;margin:0}
+p{margin:0}
+.hero-text{margin-top:12px;color:#475569;line-height:1.7;text-align:center;font-size:14px}
+.sum-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:20px}
+.sum-box{border-radius:20px;padding:14px}
+.sum-box span{display:block;font-size:11px;font-weight:700}
+.sum-box strong{display:block;margin-top:6px;font-size:20px}
+.sum-box.c1{background:#ecfeff}.sum-box.c1 span{color:#0e7490}
+.sum-box.c2{background:#eff6ff}.sum-box.c2 span{color:#1d4ed8}
+.sum-box.c3{background:#e0f2fe}.sum-box.c3 span{color:#075985}
+.btn-stack{display:grid;gap:10px;margin-top:20px}
+.btn-p,.btn-s{width:100%;border-radius:16px;border:none;display:flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:12px 16px;font-weight:700;font-size:15px;transition:.18s}
+.btn-p{background:linear-gradient(135deg,#0891b2,#2563eb);color:#fff;box-shadow:0 10px 20px rgba(14,116,144,.22)}
+.btn-p:hover{transform:translateY(-1px)}
+.btn-s{background:rgba(255,255,255,.9);color:#0f172a;border:2px solid #dbeafe}
+.btn-s:disabled{opacity:.4;cursor:not-allowed}
+.btn-s.sm{width:auto;min-height:40px;padding:8px 14px;font-size:13px}
+/* 퀴즈 */
+.quiz-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.quiz-top h2{margin:0;text-align:left;font-size:20px}
+.score-chip{background:#cffafe;border-radius:16px;padding:8px 12px;text-align:center;min-width:80px}
+.score-chip span{display:block;font-size:10px;font-weight:700;color:#0e7490}
+.score-chip strong{font-size:18px;color:#155e75}
+.prog-wrap{height:10px;background:#e2e8f0;border-radius:999px;overflow:hidden;margin-bottom:14px}
+.prog-bar{height:100%;border-radius:999px;background:linear-gradient(90deg,#22d3ee,#2563eb);transition:width .4s ease}
+.q-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.badge{display:inline-flex;align-items:center;border-radius:999px;padding:5px 12px;font-size:12px;font-weight:700;background:#ecfeff;color:#0e7490}
+.muted{color:#64748b;font-size:13px}
+.choices{display:grid;gap:10px;margin-top:16px}
+.choice{width:100%;text-align:left;padding:14px 16px;background:rgba(255,255,255,.9);border:2px solid #e2e8f0;border-radius:16px;color:#334155;font-weight:600;font-size:14px;transition:.15s}
+.choice:hover:not(:disabled){border-color:#bae6fd}
+.choice.sel{border-color:#06b6d4;background:#ecfeff;color:#0e7490}
+.choice.ok{border-color:#06b6d4;background:#cffafe;color:#155e75}
+.choice.ng{border-color:#f43f5e;background:#fff1f2;color:#be123c}
+.choice.dim{opacity:.6}
+.feedback{margin-top:14px;border-radius:20px;padding:14px}
+.feedback.fc{background:#ecfeff;color:#155e75}
+.feedback.fw{background:#fff1f2;color:#be123c}
+.fb-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px}
+.fb-icon{font-size:20px;flex-shrink:0;margin-top:2px}
+.fb-title{font-weight:800;font-size:15px}
+.fb-ans{margin-top:4px;color:#334155;font-size:13px}
+.fb-text{margin-top:6px;color:#334155;line-height:1.65;font-size:13px}
+/* 결과 */
+.pct-box{margin-top:20px;text-align:center}
+.pct-box span{display:block;font-size:13px;color:#64748b}
+.pct-box strong{display:block;margin-top:4px;font-size:clamp(40px,8vw,60px);line-height:1}
+/* 오답 */
+.wn-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.wn-top h2{margin:0;font-size:20px}
+.wn-list{display:grid;gap:14px}
+.wn-card{border-radius:20px;padding:18px}
+.wn-badges{display:flex;gap:8px;margin-bottom:12px}
+.sub-badge{display:inline-flex;align-items:center;border-radius:999px;padding:5px 10px;font-size:12px;font-weight:600;background:#f1f5f9;color:#475569}
+.wn-box{border-radius:14px;padding:12px;margin-top:10px}
+.wn-box span{display:block;font-size:12px;color:#64748b}
+.wn-box strong,.wn-box p{display:block;margin-top:4px;line-height:1.6;font-size:14px}
+.box-user{background:#fff1f2}.box-user strong{color:#be123c}
+.box-ans{background:#ecfeff}.box-ans strong{color:#0e7490}
+.box-exp{background:#f8fafc}.box-exp p{color:#0f172a}
+.empty{text-align:center;padding:2rem;color:#64748b}
+.empty .ei{font-size:40px;margin-bottom:8px}
+/* 화면 숨기기 */
+.screen{display:none}
+.screen.on{display:block}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="dots"><span></span><span></span><span></span></div>
+  <div class="tabs">
+    <div class="tab" id="tab-home">홈</div>
+    <div class="tab" id="tab-quiz">퀴즈</div>
+    <div class="tab" id="tab-result">결과</div>
+    <div class="tab" id="tab-wrong">오답</div>
+  </div>
+
+  <!-- 홈 -->
+  <div id="s-home" class="screen on">
+    <div class="card">
+      <div class="hero-icon">🐟</div>
+      <h1>수산질병 암기 퀴즈</h1>
+      <p class="hero-text">수산생명의학과 전공 암기용 퀴즈앱입니다.<br>증상 단서를 보고 질병명을 맞히고, 틀린 문제는 해설과 함께 복습하세요.</p>
+      <div class="sum-grid">
+        <div class="sum-box c1"><span>문항 수</span><strong id="home-total">0개</strong></div>
+        <div class="sum-box c2"><span>학습 방식</span><strong>객관식</strong></div>
+        <div class="sum-box c3"><span>복습</span><strong>오답노트</strong></div>
+      </div>
+      <div class="btn-stack">
+        <button class="btn-p" onclick="startQuiz('normal')">📖 일반 학습 시작</button>
+        <button class="btn-s" onclick="startQuiz('random')">🔀 랜덤 학습 시작</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 퀴즈 -->
+  <div id="s-quiz" class="screen">
+    <div class="quiz-top">
+      <div>
+        <p class="muted" id="q-progress">문제 0 / 0</p>
+        <h2>증상으로 질병 맞히기</h2>
+      </div>
+      <div class="score-chip"><span>현재 점수</span><strong id="q-score">0</strong></div>
+    </div>
+    <div class="prog-wrap"><div class="prog-bar" id="prog-bar" style="width:0%"></div></div>
+    <div class="card">
+      <div class="q-head">
+        <span class="badge" id="q-cat">카테고리</span>
+        <span class="muted">🎯 질병명 선택</span>
+      </div>
+      <h3 id="q-clue"></h3>
+      <div class="choices" id="choices"></div>
+      <div class="feedback" id="feedback" style="display:none">
+        <div class="fb-row">
+          <span class="fb-icon" id="fb-icon"></span>
+          <div>
+            <p class="fb-title" id="fb-title"></p>
+            <p class="fb-ans" id="fb-ans"></p>
+            <p class="fb-text" id="fb-text"></p>
+          </div>
+        </div>
+        <button class="btn-p" id="next-btn" onclick="nextQ()" style="width:100%;margin-top:10px">다음 문제 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 결과 -->
+  <div id="s-result" class="screen">
+    <div class="card">
+      <div class="hero-icon">🏆</div>
+      <h2>학습 결과</h2>
+      <p class="muted" style="text-align:center;margin-top:6px" id="res-mode"></p>
+      <div class="sum-grid">
+        <div class="sum-box c1"><span>점수</span><strong id="res-score">0</strong></div>
+        <div class="sum-box c2"><span>총 점수</span><strong id="res-total">0</strong></div>
+        <div class="sum-box c3"><span>오답 수</span><strong id="res-wrong">0</strong></div>
+      </div>
+      <div class="pct-box">
+        <span>정답률</span>
+        <strong id="res-pct">0%</strong>
+      </div>
+      <div class="btn-stack" style="margin-top:20px">
+        <button class="btn-p" onclick="restart()">🔄 처음부터 다시 학습</button>
+        <button class="btn-s" id="btn-retry-wrong" onclick="retryWrong()">🎯 오답만 다시 풀기</button>
+        <button class="btn-s" id="btn-review-wrong" onclick="goWrongNote()">📋 오답 풀이 보기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 오답노트 -->
+  <div id="s-wrong" class="screen">
+    <div class="wn-top">
+      <h2>오답 풀이</h2>
+      <button class="btn-s sm" onclick="goHome()">🏠 홈</button>
+    </div>
+    <p class="muted" style="margin-bottom:14px">틀린 문제만 다시 보면서 질병명과 핵심 단서를 복습하세요.</p>
+    <div class="wn-list" id="wn-list"></div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════
+   ★ 문제 데이터 — 수정은 여기만!
+   형식: { id, category, disease, clue, explanation, answer, options }
+═══════════════════════════════════════ */
+const DATA = [
+  {id:1,category:"기생충성",disease:"백점병",clue:"몸과 지느러미에 작은 흰 반점이 생기고, 벽에 몸을 비비며 호흡이 빨라지는 질환",explanation:"백점병은 대표적인 기생충성 질병으로, 흰 반점과 마찰 행동, 호흡 이상이 핵심 단서입니다.",answer:"백점병",options:["백점병","비브리오병","연쇄구균병","수생진균병"]},
+  {id:2,category:"세균성",disease:"비브리오병",clue:"출혈, 궤양, 복부 팽만, 활력 저하가 나타날 수 있는 대표적 세균성 질병",explanation:"비브리오병은 해산 어류에서 자주 문제되는 세균성 질병으로 출혈과 궤양이 중요 포인트입니다.",answer:"비브리오병",options:["비브리오병","백점병","림포시스티스병","아가미흡충병"]},
+  {id:3,category:"세균성",disease:"연쇄구균병",clue:"안구돌출, 회전 유영, 체색 흑화가 특징적으로 나타날 수 있는 질병",explanation:"연쇄구균병은 회전 유영과 안구돌출이 자주 언급되는 대표 질환이라 암기 가치가 높습니다.",answer:"연쇄구균병",options:["트리코디나충병","연쇄구균병","바이러스성신경괴사증","수생진균병"]},
+  {id:4,category:"세균성",disease:"에드워드병",clue:"체색 흑화, 복부 팽만, 탈장, 출혈이 나타날 수 있는 세균성 질환",explanation:"에드워드병은 복부 팽만과 체색 변화가 자주 함께 제시되는 대표 질병입니다.",answer:"에드워드병",options:["에드워드병","백점병","참돔이리도바이러스병","아가미흡충병"]},
+  {id:5,category:"세균성",disease:"활주세균병",clue:"지느러미와 체표의 미란, 피부 손상, 아가미 이상이 나타날 수 있는 질병",explanation:"활주세균병은 체표 손상과 지느러미 부식, 아가미 이상으로 구분하는 경우가 많습니다.",answer:"활주세균병",options:["림포시스티스병","활주세균병","트리코디나충병","백점병"]},
+  {id:6,category:"바이러스성",disease:"바이러스성출혈성패혈증",clue:"복부 팽만, 출혈, 안구 이상, 유영 불균형이 나타날 수 있는 바이러스성 질환",explanation:"바이러스성출혈성패혈증은 출혈성 소견과 전신성 이상이 핵심이며, 차단방역 중심의 관리가 중요합니다.",answer:"바이러스성출혈성패혈증",options:["바이러스성출혈성패혈증","연쇄구균병","수생진균병","스쿠티카병"]},
+  {id:7,category:"바이러스성",disease:"바이러스성신경괴사증",clue:"치어에서 회전 유영, 균형 상실, 급격한 폐사가 나타나는 질환",explanation:"바이러스성신경괴사증은 특히 치어 단계에서 신경 증상과 대량 폐사로 연결될 수 있어 중요합니다.",answer:"바이러스성신경괴사증",options:["비브리오병","바이러스성신경괴사증","에드워드병","트리코디나충병"]},
+  {id:8,category:"바이러스성",disease:"참돔이리도바이러스병",clue:"아가미 빈혈, 체색 변화, 무기력, 식욕 저하가 나타나고 고수온기에 문제되기 쉬운 질환",explanation:"참돔이리도바이러스병은 고수온기 폐사와 연관해 자주 외워 두는 대표 전염성 질환입니다.",answer:"참돔이리도바이러스병",options:["백점병","참돔이리도바이러스병","활주세균병","아가미흡충병"]},
+  {id:9,category:"바이러스성",disease:"림포시스티스병",clue:"지느러미나 체표에 사마귀처럼 보이는 결절성 병변이 생길 수 있는 질환",explanation:"림포시스티스병은 결절성 병변이 핵심 단서이며 외형상 구별 포인트가 분명합니다.",answer:"림포시스티스병",options:["수생진균병","림포시스티스병","연쇄구균병","에드워드병"]},
+  {id:10,category:"기생충성",disease:"스쿠티카병",clue:"체표 궤양, 점액 과다 분비, 유영 이상, 근육 손상을 일으킬 수 있는 질환",explanation:"스쿠티카병은 점액 증가와 궤양, 조직 손상이 핵심 포인트입니다.",answer:"스쿠티카병",options:["스쿠티카병","비브리오병","림포시스티스병","활주세균병"]},
+  {id:11,category:"기생충성",disease:"트리코디나충병",clue:"체표 점액 증가, 아가미 자극, 호흡곤란, 벽에 몸을 비비는 행동이 나타나는 질환",explanation:"트리코디나충병은 아가미 자극과 비비기 행동이 자주 등장하는 대표 기생충성 질병입니다.",answer:"트리코디나충병",options:["트리코디나충병","에드워드병","바이러스성출혈성패혈증","수생진균병"]},
+  {id:12,category:"기생충성",disease:"아가미흡충병",clue:"아가미 점액 증가, 호흡 곤란, 수면 부상, 성장 저하가 나타날 수 있는 질환",explanation:"아가미흡충병은 이름 그대로 아가미 관련 증상이 중심이어서 분류와 연결해 외우기 좋습니다.",answer:"아가미흡충병",options:["비브리오병","아가미흡충병","연쇄구균병","림포시스티스병"]},
+  {id:13,category:"진균성",disease:"수생진균병",clue:"몸 표면에 솜 같은 흰색 또는 회색 곰팡이 형태가 보일 수 있는 질환",explanation:"수생진균병은 외형이 비교적 눈에 띄어 암기 문제로 자주 쓰기 좋습니다.",answer:"수생진균병",options:["수생진균병","백점병","에드워드병","참돔이리도바이러스병"]},
+  {id:14,category:"기생충성",disease:"점액포자충병",clue:"여윔, 유영 이상, 점액 증가가 나타날 수 있고 넙치에서 중요하게 다뤄지는 기생충성 질환",explanation:"점액포자충병은 넙치의 여윔과 연결되어 자주 언급되며 기생충성 질병군에서 함께 암기하는 경우가 많습니다.",answer:"점액포자충병",options:["점액포자충병","연쇄구균병","림포시스티스병","활주세균병"]},
+  {id:15,category:"바이러스성",disease:"잉어봄바이러스병",clue:"공식 질병 목록에 포함되는 바이러스성 질병으로, 잉어류에서 중요하게 다뤄지는 질환",explanation:"잉어봄바이러스병은 공인된 수산질병명으로 분류 암기용 문제에 적합합니다.",answer:"잉어봄바이러스병",options:["잉어봄바이러스병","비브리오병","트리코디나충병","수생진균병"]},
+  {id:16,category:"세균성",disease:"궤양병(에어로모나스)",clue:"체표 출혈과 궤양이 뚜렷하고 내수면 양식어류에서 자주 문제되는 세균성 질환",explanation:"에어로모나스성 궤양병은 내수면 양식어류 관리 자료에서 반복적으로 등장하는 질환입니다.",answer:"궤양병(에어로모나스)",options:["아가미흡충병","궤양병(에어로모나스)","바이러스성신경괴사증","림포시스티스병"]},
+  {id:17,category:"세균성",disease:"세균성아가미병",clue:"아가미 부식, 호흡 곤란, 아가미 표면의 이상이 중심으로 나타나는 세균성 질환",explanation:"세균성아가미병은 아가미 부식과 호흡 문제를 중심으로 구분하는 것이 좋습니다.",answer:"세균성아가미병",options:["세균성아가미병","백점병","잉어봄바이러스병","스쿠티카병"]},
+  {id:18,category:"진균성",disease:"유행성궤양증후군",clue:"심한 궤양성 병변이 특징이며 공식 검사 대상 질병 목록에도 포함되는 질환",explanation:"유행성궤양증후군은 공식 질병 목록에 포함되는 질환으로, 감별 진단과 검역 측면에서 의미가 큽니다.",answer:"유행성궤양증후군",options:["유행성궤양증후군","에드워드병","트리코디나충병","참돔이리도바이러스병"]},
+];
+/* ═══════════════════════════════════════ */
+
+let pool=[], idx=0, score=0, wrongList=[], mode='normal', answered=false;
+
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+
+function setTab(t){
+  ['home','quiz','result','wrong'].forEach(id=>{
+    document.getElementById('tab-'+id).className='tab'+(id===t?' on':'');
+  });
+}
+
+function showScreen(id){
+  ['home','quiz','result','wrong'].forEach(s=>{
+    document.getElementById('s-'+s).className='screen'+(s===id?' on':'');
+  });
+  setTab(id);
+}
+
+function goHome(){showScreen('home');}
+function goWrongNote(){renderWrong();showScreen('wrong');}
+
+function startQuiz(m){
+  mode=m;
+  pool=m==='random'?shuffle([...DATA]):[...DATA];
+  idx=0;score=0;wrongList=[];answered=false;
+  showScreen('quiz');
+  renderQ();
+}
+
+function retryWrong(){
+  if(!wrongList.length)return;
+  mode='wrongOnly';
+  pool=shuffle(wrongList.map(({userAnswer,...r})=>r));
+  idx=0;score=0;wrongList=[];answered=false;
+  showScreen('quiz');
+  renderQ();
+}
+
+function restart(){
+  startQuiz(mode==='wrongOnly'?'normal':mode);
+}
+
+function renderQ(){
+  const q=pool[idx];
+  const total=pool.length;
+  document.getElementById('q-progress').textContent='문제 '+(idx+1)+' / '+total;
+  document.getElementById('q-score').textContent=score;
+  document.getElementById('prog-bar').style.width=((idx+1)/total*100)+'%';
+  document.getElementById('q-cat').textContent=q.category;
+  document.getElementById('q-clue').textContent=q.clue;
+  document.getElementById('feedback').style.display='none';
+  answered=false;
+
+  const opts=shuffle([...q.options]);
+  const box=document.getElementById('choices');
+  box.innerHTML='';
+  opts.forEach(opt=>{
+    const b=document.createElement('button');
+    b.className='choice';
+    b.textContent=opt;
+    b.onclick=()=>selectAnswer(opt,q,b,opts);
+    box.appendChild(b);
+  });
+}
+
+function selectAnswer(opt, q, btn, opts){
+  if(answered)return;
+  answered=true;
+  const correct=opt===q.answer;
+
+  document.querySelectorAll('.choice').forEach(b=>{
+    b.disabled=true;
+    if(b.textContent===q.answer) b.className='choice ok';
+    else if(b===btn && !correct) b.className='choice ng';
+    else b.className='choice dim';
+  });
+
+  if(correct){score+=10;}
+  else{wrongList.push({...q,userAnswer:opt});}
+  document.getElementById('q-score').textContent=score;
+
+  const fb=document.getElementById('feedback');
+  fb.className='feedback '+(correct?'fc':'fw');
+  document.getElementById('fb-icon').textContent=correct?'✅':'❌';
+  document.getElementById('fb-title').textContent=correct?'정답입니다':'오답입니다';
+  document.getElementById('fb-ans').textContent=correct?'':'정답: '+q.answer;
+  document.getElementById('fb-text').textContent=q.explanation;
+  document.getElementById('next-btn').textContent=idx===pool.length-1?'결과 보기':'다음 문제 →';
+  fb.style.display='block';
+}
+
+function nextQ(){
+  idx++;
+  if(idx>=pool.length){showResult();return;}
+  renderQ();
+}
+
+function showResult(){
+  const total=pool.length;
+  const pct=Math.round(score/(total*10)*100);
+  const modeLabel=mode==='random'?'랜덤 학습':mode==='wrongOnly'?'오답 재학습':'일반 학습';
+  document.getElementById('res-mode').textContent=modeLabel+'을 완료했습니다.';
+  document.getElementById('res-score').textContent=score;
+  document.getElementById('res-total').textContent=total*10;
+  document.getElementById('res-wrong').textContent=wrongList.length;
+  document.getElementById('res-pct').textContent=pct+'%';
+  document.getElementById('btn-retry-wrong').disabled=wrongList.length===0;
+  document.getElementById('btn-review-wrong').disabled=wrongList.length===0;
+  showScreen('result');
+}
+
+function renderWrong(){
+  const box=document.getElementById('wn-list');
+  if(!wrongList.length){
+    box.innerHTML='<div class="empty"><div class="ei">🎉</div><div>오답이 없습니다</div><p class="muted">모든 문제를 맞혔습니다.</p></div>';
+    return;
+  }
+  box.innerHTML=wrongList.map((item,i)=>`
+    <div class="card wn-card">
+      <div class="wn-badges">
+        <span class="badge">오답 ${i+1}</span>
+        <span class="sub-badge">${item.category}</span>
+      </div>
+      <h3>${item.clue}</h3>
+      <div class="wn-box box-user"><span>내가 고른 답</span><strong>${item.userAnswer}</strong></div>
+      <div class="wn-box box-ans"><span>정답</span><strong>${item.answer}</strong></div>
+      <div class="wn-box box-exp"><span>해설</span><p>${item.explanation}</p></div>
+    </div>
+  `).join('');
+}
+
+// 초기화
+document.getElementById('home-total').textContent=DATA.length+'개';
+</script>
+</body>
+</html>
